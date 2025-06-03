@@ -22,13 +22,13 @@ function App() {
     event.preventDefault();
     
     const wardenData = {
-      staffNumber: number,
-      firstName: firstName,
-      surname: lastName
+      staff_number: number,
+      first_name: firstName,
+      last_name: lastName
     };
 
     try {
-      const response = await fetch('https://fire-warden-backend-bucye5b4embadfbv.uksouth-01.azurewebsites.net/addWarden', {
+      const response = await fetch('https://fire-warden-api.azurewebsites.net/api/addWarden?', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -36,8 +36,8 @@ function App() {
         body: JSON.stringify(wardenData)
       });
 
-      const result = await response.text();
-      alert(result);
+      const result = await response.json();
+      alert(result.message);
     } catch (error) {
       console.error('Error submitting data:', error);
       alert('Failed to submit data');
