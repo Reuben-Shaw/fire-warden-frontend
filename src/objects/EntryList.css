@@ -1,0 +1,18 @@
+.entry-list {
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.entry-card {
+    background-color: #f0f0f0;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+button {
+    font-weight: 500;
+    background-color: red;
+}

@@ -37,7 +37,7 @@ function Login({ onLoginSuccess }) {
         };
 
         try {
-            const response = await fetch('https://fire-warden-api.azurewebsites.net/api/tryLogin?', {
+            const response = await fetch('http://localhost:7071/api/tryLogin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

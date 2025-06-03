@@ -1,0 +1,24 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: white;
+    padding: 10px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.header-logo {
+    max-width: 300px;
+}
+
+.header-nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1rem;
+}
+
+.header-nav a:hover {
+    text-decoration: underline;
+}

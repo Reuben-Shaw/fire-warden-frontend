@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import AddWarden from './pages/AddWarden';
 import { useState } from 'react';
+import WardenLocation from './pages/WardenLocation';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,16 +13,16 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to="/add-warden" />
+              <Navigate to="/warden-location" />
             ) : (
               <Login onLoginSuccess={() => setIsAuthenticated(true)} />
             )
           }
         />
         <Route
-          path="/add-warden"
+          path="/warden-location"
           element={
-            isAuthenticated ? <AddWarden /> : <Navigate to="/" />
+            isAuthenticated ? <WardenLocation /> : <Navigate to="/" />
           }
         />
       </Routes>
