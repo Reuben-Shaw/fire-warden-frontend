@@ -33,7 +33,7 @@ function WardenLocation({ staffNumber }) {
     const fetchBuildings = async () => {
       try {
         const res = await fetch(
-          `http://localhost:7071/api/getAllBuildings?`
+          `${config.apiBaseUrl}/getAllBuildings?`
         );
         const data = await res.json();
 
@@ -59,7 +59,7 @@ function WardenLocation({ staffNumber }) {
     };
 
     try {
-      const response = await fetch('http://localhost:7071/api/leaveBuilding', {
+      const response = await fetch(`${config.apiBaseUrl}/leaveBuilding`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ function WardenLocation({ staffNumber }) {
       const result = await response.json();
 
       if (result.success) {
-        const updated = await fetch(`http://localhost:7071/api/getEntriesByNumber/${staffNumber}`);
+        const updated = await fetch(`${config.apiBaseUrl}/getEntriesByNumber/${staffNumber}`);
         const updatedData = await updated.json();
 
         if (updatedData.success) {
