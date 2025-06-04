@@ -146,7 +146,7 @@ function Login({ onLoginSuccess }) {
               onChange={handlePasswordChange}
               required
             />
-            <button type='submit'>Sign In</button>
+            <button type='submit'>{isRegistering ? 'Register' : 'Login'}</button>
             <p className="register-text">
               {isRegistering ? 'Already have an account?' : 'Don\'t have an account?'}{' '}
               <a
