@@ -52,9 +52,9 @@ function WardenLocation({ staffNumber }) {
     fetchBuildings();
   }, [staffNumber]);
 
-  const handleLeave = async (entryId) => {
+  const handleLeave = async (entryID) => {
     const registerData = {
-      entry_id: entryId,
+      entry_id: entryID,
       time_now: new Date().toISOString()
     };
 
@@ -70,20 +70,13 @@ function WardenLocation({ staffNumber }) {
       const result = await response.json();
 
       if (result.success) {
-        const updated = await fetch(`${config.apiBaseUrl}/getEntriesByNumber/${staffNumber}`);
-        const updatedData = await updated.json();
-
-        if (updatedData.success) {
-          setEntries(updatedData.data);
-        } else {
-          alert('Left, but failed to refresh list');
-        }
+          updateList();
       } else {
         alert(result.message || 'Leaving Failed');
       }
     } catch (error) {
-      console.error('Error submitting data:', error);
-      alert('Failed to submit data');
+      console.error('Error leaving building:', error);
+      alert('Failed to leave building');
     }
   };
 
@@ -117,22 +110,76 @@ function WardenLocation({ staffNumber }) {
 
       const result = await response.json();
       if (result.success) {
-          const updated = await fetch(`${config.apiBaseUrl}/getEntriesByNumber/${staffNumber}`);
-          const updatedData = await updated.json();
-
-          if (updatedData.success) {
-            setEntries(updatedData.data);
-          } else {
-            alert('Added new entry, but unable to refresh list');
-          }
-        } else {
-          alert(result.message || 'Adding new entry failed');
-        }
+          updateList();
+      } else {
+        alert(result.message || 'Adding new entry failed');
+      }
     } catch (error) {
-      console.error('Error submitting data:', error);
-      alert('Failed to submit data');
+      console.error('Error adding entry:', error);
+      alert('Failed to add entry');
     }
   };
+
+  const handleUpdate = async (entryID, newBuilding, newEntry, newExit) => {
+    const updateData = {
+      entry_id: entryID,
+      building_id: newBuilding,
+      entry_datetime: newEntry,
+      exit_datetime: newExit
+    };
+
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/updateEntry?`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      const result = await response.json();
+      if (result.success) {
+          updateList();
+      } else {
+        alert(result.message || 'Updating entry failed');
+      }
+    } catch (error) {
+      console.error('Error updating entry:', error);
+      alert('Failed to update entry');
+    }
+  }
+
+  const handleDelete = async (entryID) => {
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/deleteEntry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entry_id: entryID })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        updateList();
+      } else {
+        alert(result.message || 'Something went wrong');
+      }
+    } catch (error) {
+      console.error('Error: deleting', error);
+      alert('Delete failed');
+    }
+  };
+
+  const updateList = async() => {
+    const updated = await fetch(`${config.apiBaseUrl}/getEntriesByNumber/${staffNumber}`);
+    const updatedData = await updated.json();
+
+    if (updatedData.success) {
+      setEntries(updatedData.data);
+    } else {
+      alert('Request successful, error updating list');
+    }
+  }
 
   return (
     <div>
@@ -151,7 +198,13 @@ function WardenLocation({ staffNumber }) {
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
         <p></p>
-        <EntryList entries={entries} onLeaveBuilding={handleLeave} />
+        <EntryList
+          buildings={buildings} 
+          entries={entries} 
+          onLeaveBuilding={handleLeave} 
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );

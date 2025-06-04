@@ -1,4 +1,4 @@
-const useLocalAPI = false;
+const useLocalAPI = true;
 
 const config = {
   useLocalAPI,

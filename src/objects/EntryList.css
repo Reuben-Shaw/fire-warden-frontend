@@ -28,3 +28,13 @@ button {
 button:hover {
   background-color: #641a69;
 }
+
+.buttons-div {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.delete {
+  background-color: red;
+}
