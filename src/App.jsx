@@ -2,14 +2,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import { useState } from 'react';
 import WardenLocation from './pages/WardenLocation';
+import ViewWardens from './pages/ViewWardens';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [staffNumber, setStaffNumber] = useState(null);
+  const [isWarden, setIsWarden] = useState(false);
 
-  const handleLoginSuccess = (number) => {
+  const handleLoginSuccess = (number, isWarden) => {
     setStaffNumber(number);
     setIsAuthenticated(true);
+    setIsWarden(isWarden);
   };
 
   return (
@@ -18,17 +21,27 @@ function App() {
         <Route
           path="/"
           element={
-            isAuthenticated ? (
-              <Navigate to="/warden-location" />
+            isAuthenticated && !isWarden ? (
+              <Navigate to="/view-wardens" />
             ) : (
-              <Login onLoginSuccess={handleLoginSuccess} />
+              isAuthenticated && isWarden ? (
+                <Navigate to="/warden-location" />
+              ) : (
+                <Login onLoginSuccess={handleLoginSuccess} />
+              )
             )
           }
         />
         <Route
           path="/warden-location"
           element={
-            isAuthenticated ? <WardenLocation staffNumber={staffNumber} /> : <Navigate to="/" />
+            isAuthenticated && isWarden ? <WardenLocation staffNumber={staffNumber} /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/view-wardens"
+          element={
+            isAuthenticated && !isWarden ? <ViewWardens /> : <Navigate to="/" />
           }
         />
       </Routes>
