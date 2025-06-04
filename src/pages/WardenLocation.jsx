@@ -53,7 +53,7 @@ function WardenLocation({ staffNumber }) {
   }, [staffNumber]);
 
   const handleLeave = async (entryID) => {
-    const registerData = {
+    const leaveData = {
       entry_id: entryID,
       time_now: new Date().toISOString()
     };
@@ -64,7 +64,7 @@ function WardenLocation({ staffNumber }) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(registerData)
+        body: JSON.stringify(leaveData)
       });
 
       const result = await response.json();
@@ -93,30 +93,50 @@ function WardenLocation({ staffNumber }) {
     );
     const utcDatetime = dateTime.toISOString();
 
-    const registerData = {
+    const updateLocationData = {
       staff_number: staffNumber,
-      building_id: selectedBuilding,
-      entry_datetime: `${utcDatetime}`
+      time_now: new Date().toISOString()
     };
 
     try {
-      const response = await fetch(`${config.apiBaseUrl}/addEntry?`, {
+      const leaveResponse = await fetch(`${config.apiBaseUrl}/leaveBuildingFromAdd`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(registerData)
+        body: JSON.stringify(updateLocationData)
       });
 
-      const result = await response.json();
-      if (result.success) {
+      const leaveResult = await leaveResponse.json();
+
+      if (leaveResult.success) {
+        const addData = {
+          staff_number: staffNumber,
+          building_id: selectedBuilding,
+          entry_datetime: `${utcDatetime}`
+        };
+
+        const addResponse = await fetch(`${config.apiBaseUrl}/addEntry?`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(addData)
+        });
+
+        const addResult = await addResponse.json();
+
+        if (addResult.success) {
           updateList();
+        } else {
+          alert(addResult.message || 'Adding new entry failed after leaving previous one.');
+        }
       } else {
-        alert(result.message || 'Adding new entry failed');
+        alert(leaveResult.message || 'Failed to leave previous building. Entry not added.');
       }
     } catch (error) {
-      console.error('Error adding entry:', error);
-      alert('Failed to add entry');
+      console.error('Error updating entry:', error);
+      alert('Failed to update building entry.');
     }
   };
 
