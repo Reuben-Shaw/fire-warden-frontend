@@ -5,6 +5,12 @@ import WardenLocation from './pages/WardenLocation';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [staffNumber, setStaffNumber] = useState(null);
+
+  const handleLoginSuccess = (number) => {
+    setStaffNumber(number);
+    setIsAuthenticated(true);
+  };
 
   return (
     <Router>
@@ -15,14 +21,14 @@ function App() {
             isAuthenticated ? (
               <Navigate to="/warden-location" />
             ) : (
-              <Login onLoginSuccess={() => setIsAuthenticated(true)} />
+              <Login onLoginSuccess={handleLoginSuccess} />
             )
           }
         />
         <Route
           path="/warden-location"
           element={
-            isAuthenticated ? <WardenLocation staffNumber={555} /> : <Navigate to="/" />
+            isAuthenticated ? <WardenLocation staffNumber={staffNumber} /> : <Navigate to="/" />
           }
         />
       </Routes>

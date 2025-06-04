@@ -52,7 +52,7 @@ function WardenLocation({ staffNumber }) {
     fetchBuildings();
   }, [staffNumber]);
 
-  const handleUpdate = async (entryId) => {
+  const handleLeave = async (entryId) => {
     const registerData = {
       entry_id: entryId,
       time_now: new Date().toISOString()
@@ -75,13 +75,59 @@ function WardenLocation({ staffNumber }) {
 
         if (updatedData.success) {
           setEntries(updatedData.data);
-          alert('Successfully Left');
         } else {
           alert('Left, but failed to refresh list');
         }
       } else {
         alert(result.message || 'Leaving Failed');
       }
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      alert('Failed to submit data');
+    }
+  };
+
+  const handleAdd = async (time, selectedBuilding) => {
+    const dateNow = new Date();
+    const [hours, minutes] = time.split(':').map(Number);
+    const dateTime = new Date(
+      dateNow.getFullYear(),
+      dateNow.getMonth(),
+      dateNow.getDate(),
+      hours,
+      minutes,
+      0
+    );
+    const utcDatetime = dateTime.toISOString();
+
+    const registerData = {
+      staff_number: staffNumber,
+      building_id: selectedBuilding,
+      entry_datetime: `${utcDatetime}`
+    };
+
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/addEntry?`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(registerData)
+      });
+
+      const result = await response.json();
+      if (result.success) {
+          const updated = await fetch(`${config.apiBaseUrl}/getEntriesByNumber/${staffNumber}`);
+          const updatedData = await updated.json();
+
+          if (updatedData.success) {
+            setEntries(updatedData.data);
+          } else {
+            alert('Added new entry, but unable to refresh list');
+          }
+        } else {
+          alert(result.message || 'Adding new entry failed');
+        }
     } catch (error) {
       console.error('Error submitting data:', error);
       alert('Failed to submit data');
@@ -98,14 +144,14 @@ function WardenLocation({ staffNumber }) {
           {showPopup && (
             <EntryPopup
               buildings={buildings}
-              staffNumber={staffNumber}
+              onAdd={handleAdd}
               onCancel={() => setShowPopup(false)}
             />
           )}
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
         <p></p>
-        <EntryList entries={entries} onLeaveBuilding={handleUpdate} />
+        <EntryList entries={entries} onLeaveBuilding={handleLeave} />
       </div>
     </div>
   );

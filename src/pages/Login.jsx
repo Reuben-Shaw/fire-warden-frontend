@@ -49,7 +49,7 @@ function Login({ onLoginSuccess }) {
 
       const result = await response.json();
       if (result.success) {
-        onLoginSuccess();
+        onLoginSuccess(staffNumber);
       } else {
         alert(result.message || 'Login failed');
       }
