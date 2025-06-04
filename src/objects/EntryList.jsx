@@ -1,53 +1,48 @@
-import React from 'react';
 import './EntryList.css';
+import '../App.css';
 
-const EntryList = ({ entries }) => {
-    const handleUpdate = async (entryId) => {
-        const registerData = {
-            entry_id: entryId,
-            time_now: new Date().toISOString()
-        };
+const EntryList = ({ entries, onLeaveBuilding }) => {
+  return (
+    <div className="entry-list">
+      {entries.map((entry) => (
+        <div key={entry.id} className="entry-card">
+          <div>
+            {(() => {
+              const formatTime = (datetime) => new Date(datetime).toLocaleString();
+              const splitDate = (datetime) => formatTime(datetime).split(',');
 
-        try {
-            const response = await fetch('http://localhost:7071/api/leaveBuilding', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(registerData)
-            });
+              const hasExited = !!entry.exit_datetime;
 
-            const result = await response.json();
+              const entryParts = splitDate(entry.entry_datetime);
+              const exitParts = hasExited ? splitDate(entry.exit_datetime) : null;
 
-            if (result.success) {
-                alert('Successfully Left');
-            } else {
-                alert(result.message || 'Leaving Failed');
-            }
-        } catch (error) {
-            console.error('Error submitting data:', error);
-            alert('Failed to submit data');
-        }
-    };
+              const sameDay = hasExited && entryParts[0] === exitParts[0];
 
-    return (
-        <div className="entry-list">
-            {entries.map((entry) => (
-                <div key={entry.id} className="entry-card">
-                    <h3>{entry.building_name}</h3>
-                    <p><strong>Entry:</strong> {new Date(entry.entry_datetime).toLocaleString()}</p>
-                    <p><strong>Exit:</strong> {entry.exit_datetime ? new Date(entry.exit_datetime).toLocaleString() : 'Still inside'}</p>
-                    <button 
-                        title="Leave"
-                        onClick={() => handleUpdate(entry.id)}
-                        disabled={!!entry.exit_datetime}
-                    >
-                        {entry.exit_datetime ? 'Exited' : 'Leave Building'}
-                    </button>
-                </div>
-            ))}
+              return (
+                <>
+                  <h3>{entry.building_name}{sameDay ? ` - ${entryParts[0]}` : ''}</h3>
+                  <p><strong>Entry Time:</strong> {sameDay ? entryParts[1] : formatTime(entry.entry_datetime)}</p>
+                  <p><strong>Exit Time:</strong> {
+                    hasExited
+                      ? (sameDay ? exitParts[1] : formatTime(entry.exit_datetime))
+                      : 'Still inside'
+                  }</p>
+                </>
+              );
+            })()}
+          </div>
+          {!entry.exit_datetime && (
+            <button
+              title="Leave"
+              onClick={() => onLeaveBuilding(entry.id)}
+            >
+              Leave Building
+            </button>
+          )}
         </div>
-    );
+      ))}
+    </div>
+  );
 };
 
 export default EntryList;

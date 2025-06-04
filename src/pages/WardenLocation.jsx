@@ -1,47 +1,114 @@
 import { useEffect, useState } from 'react';
 import EntryList from '../objects/EntryList';
 import Header from '../objects/Header';
+import EntryPopup from '../objects/EntryPopup';
+import config from '../config';
+import './WardenLocation.css';
 
-function WardenLocation() {
-    const [entries, setEntries] = useState([]);
-    const [error, setError] = useState(null);
+function WardenLocation({ staffNumber }) {
+  const [entries, setEntries] = useState([]);
+  const [error, setError] = useState(null);
 
-    const staffNumber = 555;
+  const [showPopup, setShowPopup] = useState(false);
+  const [buildings, setBuildings] = useState([]);
 
-    useEffect(() => {
-        const fetchEntries = async () => {
-            try {
-                const res = await fetch(
-                    `http://localhost:7071/api/getEntriesByNumber/${staffNumber}`
-                );
-                const data = await res.json();
+  useEffect(() => {
+    const fetchEntries = async () => {
+      try {
+        const res = await fetch(
+          `${config.apiBaseUrl}/getEntriesByNumber/${staffNumber}`
+        );
+        const data = await res.json();
 
-                if (data.success) {
-                    setEntries(data.data);
-                } else {
-                    setError(data.message || 'Failed to fetch entries');
-                }
-            } catch (err) {
-                console.error('Error fetching entries:', err);
-                setError('Something went wrong while fetching entries');
-            }
-        };
+        if (data.success) {
+          setEntries(data.data);
+        } else {
+          setError(data.message || 'Failed to fetch entries');
+        }
+      } catch (err) {
+        console.error('Error fetching entries:', err);
+        setError('Something went wrong while fetching entries');
+      }
+    };
+    const fetchBuildings = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:7071/api/getAllBuildings?`
+        );
+        const data = await res.json();
 
-        fetchEntries();
-    }, [staffNumber]);
+        if (data.success) {
+          setBuildings(data.data);
+        } else {
+          setError(data.message || 'Failed to fetch buildings');
+        }
+      } catch (err) {
+        console.error('Error fetching buildings:', err);
+        setError('Something went wrong while fetching buildings');
+      }
+    };
 
-    return (
-        <div>
-            <Header/>
-            <div>
-                <h1>Building Entry Logs</h1>
-                
-            </div>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <p></p>
-            <EntryList entries={entries} />
+    fetchEntries();
+    fetchBuildings();
+  }, [staffNumber]);
+
+  const handleUpdate = async (entryId) => {
+    const registerData = {
+      entry_id: entryId,
+      time_now: new Date().toISOString()
+    };
+
+    try {
+      const response = await fetch('http://localhost:7071/api/leaveBuilding', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(registerData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const updated = await fetch(`http://localhost:7071/api/getEntriesByNumber/${staffNumber}`);
+        const updatedData = await updated.json();
+
+        if (updatedData.success) {
+          setEntries(updatedData.data);
+          alert('Successfully Left');
+        } else {
+          alert('Left, but failed to refresh list');
+        }
+      } else {
+        alert(result.message || 'Leaving Failed');
+      }
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      alert('Failed to submit data');
+    }
+  };
+
+  return (
+    <div>
+      <Header />
+      <div className='warden-location-page'>
+        <div className='top-bar'>
+          <h1>Building Entry Logs</h1>
+          <button onClick={() => setShowPopup(true)}>+ Add Entry</button>
+          {showPopup && (
+            <EntryPopup
+              buildings={buildings}
+              staffNumber={staffNumber}
+              onCancel={() => setShowPopup(false)}
+            />
+          )}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
-    );
+        <p></p>
+        <EntryList entries={entries} onLeaveBuilding={handleUpdate} />
+      </div>
+    </div>
+  );
 }
 
 export default WardenLocation;

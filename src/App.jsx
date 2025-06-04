@@ -22,7 +22,7 @@ function App() {
         <Route
           path="/warden-location"
           element={
-            isAuthenticated ? <WardenLocation /> : <Navigate to="/" />
+            isAuthenticated ? <WardenLocation staffNumber={555} /> : <Navigate to="/" />
           }
         />
       </Routes>
