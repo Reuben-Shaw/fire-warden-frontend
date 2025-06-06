@@ -7,8 +7,6 @@ import './WardenLocation.css';
 
 function WardenLocation({ staffNumber }) {
   const [entries, setEntries] = useState([]);
-  const [error, setError] = useState(null);
-
   const [showPopup, setShowPopup] = useState(false);
   const [buildings, setBuildings] = useState([]);
 
@@ -23,11 +21,11 @@ function WardenLocation({ staffNumber }) {
         if (data.success) {
           setEntries(data.data);
         } else {
-          setError(data.message || 'Failed to fetch entries');
+          alert(data.message || 'Failed to fetch entries');
         }
       } catch (err) {
         console.error('Error fetching entries:', err);
-        setError('Something went wrong while fetching entries');
+        alert('Something went wrong while fetching entries');
       }
     };
     const fetchBuildings = async () => {
@@ -40,11 +38,11 @@ function WardenLocation({ staffNumber }) {
         if (data.success) {
           setBuildings(data.data);
         } else {
-          setError(data.message || 'Failed to fetch buildings');
+          alert(data.message || 'Failed to fetch buildings');
         }
       } catch (err) {
         console.error('Error fetching buildings:', err);
-        setError('Something went wrong while fetching buildings');
+        alert('Something went wrong while fetching buildings');
       }
     };
 
@@ -215,7 +213,6 @@ function WardenLocation({ staffNumber }) {
               onCancel={() => setShowPopup(false)}
             />
           )}
-          {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
         <p></p>
         <EntryList
