@@ -38,3 +38,7 @@ button:hover {
 .delete {
   background-color: red;
 }
+
+.delete:hover {
+  background-color: rgb(189, 0, 0);
+}
