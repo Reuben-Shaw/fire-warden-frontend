@@ -70,6 +70,20 @@ function Login({ onLoginSuccess }) {
     };
 
     try {
+      const staffRegistered = await fetch(`${config.apiBaseUrl}/checkUserAdded?staff_number=${staffNumber}`);
+      const staffRegisteredResult = await staffRegistered.json();
+
+      if (staffRegisteredResult.success) {
+        if (!staffRegisteredResult.available) {
+          alert('Warden has already been registered');
+          return;
+        }
+      } else {
+        alert(staffRegisteredResult.message || 'Something went wrong');
+        return;
+      }
+
+
       const response = await fetch(`${config.apiBaseUrl}/registerWarden?`, {
         method: 'POST',
         headers: {

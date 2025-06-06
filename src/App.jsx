@@ -5,10 +5,12 @@ import WardenLocation from './pages/WardenLocation';
 import ViewWardens from './pages/ViewWardens';
 
 function App() {
+  // React hooks used for navigation
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [staffNumber, setStaffNumber] = useState(null);
   const [isWarden, setIsWarden] = useState(false);
 
+  // Authenticates and sets the manager for navigation to the right page
   const handleLoginSuccess = (number, isWarden) => {
     setStaffNumber(number);
     setIsAuthenticated(true);
@@ -27,6 +29,7 @@ function App() {
               isAuthenticated && isWarden ? (
                 <Navigate to="/warden-location" />
               ) : (
+                // Default page without any authentication
                 <Login onLoginSuccess={handleLoginSuccess} />
               )
             )
@@ -34,6 +37,7 @@ function App() {
         />
         <Route
           path="/warden-location"
+          // <Navigate to="/" sets the location back to the login page, as it's the route directory
           element={
             isAuthenticated && isWarden ? <WardenLocation staffNumber={staffNumber} /> : <Navigate to="/" />
           }
