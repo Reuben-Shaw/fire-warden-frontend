@@ -34,11 +34,3 @@ button:hover {
   align-items: center;
   gap: 1rem;
 }
-
-.delete {
-  background-color: red;
-}
-
-.delete:hover {
-  background-color: rgb(189, 0, 0);
-}

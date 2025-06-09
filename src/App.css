@@ -10,3 +10,11 @@
   font-weight: 700;
   font-style: normal;
 }
+
+.delete {
+  background-color: red;
+}
+
+.delete:hover {
+  background-color: rgb(189, 0, 0);
+}

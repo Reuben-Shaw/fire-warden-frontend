@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './EntryPopup.css';
+import '../App.css';
 
 function EntryPopup({ buildings, onAdd, onCancel, entryID, defaultEntry, defaultExit, defaultBuilding, sameDay }) {
   let [selectedBuilding, setSelectedBuilding] = useState('');

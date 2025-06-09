@@ -8,13 +8,17 @@ function App() {
   // React hooks used for navigation
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [staffNumber, setStaffNumber] = useState(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isWarden, setIsWarden] = useState(false);
 
   // Authenticates and sets the manager for navigation to the right page
-  const handleLoginSuccess = (number, isWarden) => {
+  const handleLoginSuccess = (number, isWarden, firstName, lastName) => {
     setStaffNumber(number);
     setIsAuthenticated(true);
     setIsWarden(isWarden);
+    setFirstName(firstName);
+    setLastName(lastName);
   };
 
   return (
@@ -39,13 +43,13 @@ function App() {
           path="/warden-location"
           // <Navigate to="/" sets the location back to the login page, as it's the route directory
           element={
-            isAuthenticated && isWarden ? <WardenLocation staffNumber={staffNumber} /> : <Navigate to="/" />
+            isAuthenticated && isWarden ? <WardenLocation staffNumber={staffNumber} firstName={firstName} lastName={lastName} /> : <Navigate to="/" />
           }
         />
         <Route
           path="/view-wardens"
           element={
-            isAuthenticated && !isWarden ? <ViewWardens /> : <Navigate to="/" />
+            isAuthenticated && !isWarden ? <ViewWardens staffNumber={staffNumber} firstName={firstName} lastName={lastName} /> : <Navigate to="/" />
           }
         />
       </Routes>

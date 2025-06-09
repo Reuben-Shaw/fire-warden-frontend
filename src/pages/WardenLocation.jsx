@@ -3,9 +3,10 @@ import EntryList from '../objects/EntryList';
 import Header from '../objects/Header';
 import EntryPopup from '../objects/EntryPopup';
 import config from '../config';
+import '../App.css';
 import './WardenLocation.css';
 
-function WardenLocation({ staffNumber }) {
+function WardenLocation({ staffNumber, firstName, lastName }) {
   const [entries, setEntries] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [buildings, setBuildings] = useState([]);
@@ -201,7 +202,12 @@ function WardenLocation({ staffNumber }) {
 
   return (
     <div>
-      <Header />
+      <Header 
+        first_name={firstName}
+        last_name={lastName}
+        isWarden={true}
+        staffNumber={staffNumber}
+      />
       <div className='warden-location-page'>
         <div className='top-bar'>
           <h1>Building Entry Logs</h1>

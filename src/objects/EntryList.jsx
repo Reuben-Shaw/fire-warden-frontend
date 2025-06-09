@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './EntryList.css';
 import '../App.css';
 import EntryPopup from './EntryPopup';
+import '../App.css';
 
 const EntryList = ({ buildings, entries, onLeaveBuilding, onDelete, onUpdate }) => {
   const [selectedEntryForEdit, setSelectedEntryForEdit] = useState(null);

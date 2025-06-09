@@ -5,7 +5,7 @@ import WardenPopup from '../objects/WardenPopup';
 import '../App.css';
 import config from '../config'
 
-function ViewWarden() {
+function ViewWarden({ staffNumber, firstName, lastName }) {
   // React hooks for updating the entry list
   const [entries, setEntries] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
@@ -59,7 +59,12 @@ function ViewWarden() {
   // Frontend display
   return (
     <div>
-      <Header />
+      <Header 
+        first_name={firstName}
+        last_name={lastName}
+        isWarden={false}
+        staffNumber={staffNumber}
+      />
       <div className='warden-location-page'>
         <button onClick={() => setShowPopup(true)}>+ Add Warden</button>
         {showPopup && (

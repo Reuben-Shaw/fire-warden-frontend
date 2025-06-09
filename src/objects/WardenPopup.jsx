@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import './EntryPopup.css';
 import config from '../config'
+import '../App.css';
 
-function EntryPopup({ onAdd, onCancel }) {
+function WardenPopup({ onAdd, onCancel }) {
   const [staffNumber, setNumber] = useState('');
 
   const handleNumberChange = (event) => {
@@ -65,4 +66,4 @@ function EntryPopup({ onAdd, onCancel }) {
   );
 }
 
-export default EntryPopup;
+export default WardenPopup;

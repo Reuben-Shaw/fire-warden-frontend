@@ -49,7 +49,8 @@ function Login({ onLoginSuccess }) {
 
       const result = await response.json();
       if (result.success) {
-        onLoginSuccess(staffNumber, result.isWarden);
+        const user = result.data;
+        onLoginSuccess(staffNumber, result.isWarden, user.first_name, user.last_name);
       } else {
         alert(result.message || 'Login failed');
       }
